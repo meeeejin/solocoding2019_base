@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:location/location.dart';
-import 'package:flutter/services.dart';
+//import 'package:location/location.dart';
+//import 'package:flutter/services.dart';
 
 import 'package:weather/widgets/Weather.dart';
 import 'package:weather/widgets/WeatherItem.dart';
@@ -22,7 +22,7 @@ class MyAppState extends State<MyApp> {
   bool isLoading = false;
   WeatherData weatherData;
   ForecastData forecastData;
-  Location _location = new Location();
+  //Location _location = new Location();
   String error;
 
   @override
@@ -96,7 +96,7 @@ class MyAppState extends State<MyApp> {
       isLoading = true;
     });
 
-    Map<String, double> location;
+    /*Map<String, double> location;
 
     try {
       location = await _location.getLocation();
@@ -114,10 +114,10 @@ class MyAppState extends State<MyApp> {
 
     if (location != null) {
     final lat = location['latitude'];
-    final lon = location['longitude'];
+    final lon = location['longitude'];*/
 
-    /*final lat = 37.263573;
-    final lon = 127.028603;*/
+    final lat = 37.263573;
+    final lon = 127.028603;
 
     final weatherResponse = await http.get(
         'https://api.openweathermap.org/data/2.5/weather?APPID=21894456df795e3f52963983c3e98f01&lat=${lat
@@ -134,7 +134,7 @@ class MyAppState extends State<MyApp> {
         isLoading = false;
       });
     }
-    }
+    //}
 
     setState(() {
       isLoading = false;
