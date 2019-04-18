@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:location/location.dart';
+import 'package:flutter/services.dart';
 
 import 'package:weather/widgets/Weather.dart';
 import 'package:weather/widgets/WeatherItem.dart';
@@ -20,6 +22,8 @@ class MyAppState extends State<MyApp> {
   bool isLoading = false;
   WeatherData weatherData;
   ForecastData forecastData;
+  Location _location = new Location();
+  String error;
 
   @override
   void initState() {
@@ -92,8 +96,29 @@ class MyAppState extends State<MyApp> {
       isLoading = true;
     });
 
-    final lat = 40.730610;
-    final lon = -73.935242;
+    Map<String, double> location;
+
+    try {
+      location = await _location.getLocation();
+
+      error = null;
+    } on PlatformException catch (e) {
+      if (e.code == 'PERMISSION_DENIED') {
+        error = 'Permission denied';
+      } else if (e.code == 'PERMISSION_DENIED_NEVER_ASK') {
+        error = 'Permission denied - please ask the user to enable it from the app settings';
+      }
+
+      location = null;
+    }
+
+    if (location != null) {
+    final lat = location['latitude'];
+    final lon = location['longitude'];
+
+    /*final lat = 37.263573;
+    final lon = 127.028603;*/
+
     final weatherResponse = await http.get(
         'https://api.openweathermap.org/data/2.5/weather?APPID=21894456df795e3f52963983c3e98f01&lat=${lat
             .toString()}&lon=${lon.toString()}');
@@ -108,6 +133,7 @@ class MyAppState extends State<MyApp> {
         forecastData = new ForecastData.fromJson(jsonDecode(forecastResponse.body));
         isLoading = false;
       });
+    }
     }
 
     setState(() {
